@@ -98,6 +98,7 @@ void BOARD_InitBootPins(void)
     BOARD_InitPins();
     BOARD_InitDEBUG_UARTPins();
     BOARD_InitLm35();
+    BOARD_InitSensLuz();
 }
 
 /* clang-format off */
@@ -787,7 +788,8 @@ void BOARD_InitOSCPins(void)
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitLm35:
 - options: {callFromInitBoot: 'true', coreID: core0, enableClock: 'true'}
-- pin_list: []
+- pin_list:
+  - {pin_num: '12', peripheral: ADC0, signal: 'SE, 7a', pin_signal: ADC0_DM3/ADC0_SE7a/PTE23/TPM2_CH1/UART2_RX/FXIO0_D7}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -800,6 +802,61 @@ BOARD_InitLm35:
  * END ****************************************************************************************************************/
 void BOARD_InitLm35(void)
 {
+    /* Port E Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortE);
+
+    /* PORTE23 (pin 12) is configured as ADC0_SE7a */
+    PORT_SetPinMux(PORTE, 23U, kPORT_PinDisabledOrAnalog);
+}
+
+/* clang-format off */
+/*
+ * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+BOARD_InitSensLuz:
+- options: {callFromInitBoot: 'true', coreID: core0, enableClock: 'true'}
+- pin_list:
+  - {pin_num: '11', peripheral: ADC0, signal: 'SE, 3', pin_signal: ADC0_DP3/ADC0_SE3/PTE22/TPM2_CH0/UART2_TX/FXIO0_D6}
+  - {pin_num: '19', peripheral: GPIOE, signal: 'GPIO, 31', pin_signal: PTE31/TPM0_CH4, direction: OUTPUT}
+  - {pin_num: '62', peripheral: GPIOD, signal: 'GPIO, 5', pin_signal: LCD_P45/ADC0_SE6b/PTD5/SPI1_SCK/UART2_TX/TPM0_CH5/FXIO0_D5, direction: OUTPUT}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
+ */
+/* clang-format on */
+
+/* FUNCTION ************************************************************************************************************
+ *
+ * Function Name : BOARD_InitSensLuz
+ * Description   : Configures pin routing and optionally pin electrical features.
+ *
+ * END ****************************************************************************************************************/
+void BOARD_InitSensLuz(void)
+{
+    /* Port D Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortD);
+    /* Port E Clock Gate Control: Clock enabled */
+    CLOCK_EnableClock(kCLOCK_PortE);
+
+    gpio_pin_config_t LED1_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTD5 (pin 62)  */
+    GPIO_PinInit(BOARD_INITSENSLUZ_LED1_GPIO, BOARD_INITSENSLUZ_LED1_PIN, &LED1_config);
+
+    gpio_pin_config_t LED2_config = {
+        .pinDirection = kGPIO_DigitalOutput,
+        .outputLogic = 0U
+    };
+    /* Initialize GPIO functionality on pin PTE31 (pin 19)  */
+    GPIO_PinInit(BOARD_INITSENSLUZ_LED2_GPIO, BOARD_INITSENSLUZ_LED2_PIN, &LED2_config);
+
+    /* PORTD5 (pin 62) is configured as PTD5 */
+    PORT_SetPinMux(BOARD_INITSENSLUZ_LED1_PORT, BOARD_INITSENSLUZ_LED1_PIN, kPORT_MuxAsGpio);
+
+    /* PORTE22 (pin 11) is configured as ADC0_SE3 */
+    PORT_SetPinMux(PORTE, 22U, kPORT_PinDisabledOrAnalog);
+
+    /* PORTE31 (pin 19) is configured as PTE31 */
+    PORT_SetPinMux(BOARD_INITSENSLUZ_LED2_PORT, BOARD_INITSENSLUZ_LED2_PIN, kPORT_MuxAsGpio);
 }
 /***********************************************************************************************************************
  * EOF
