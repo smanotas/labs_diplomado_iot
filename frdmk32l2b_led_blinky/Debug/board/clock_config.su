@@ -1,0 +1,6 @@
+C:\Users\Acer\Documents\MCUXpressoIDE_11.6.1_8255\workspace\frdmk32l2b_led_blinky\drivers/fsl_clock.h:629:20:CLOCK_SetSimSafeDivs	8	static
+C:\Users\Acer\Documents\MCUXpressoIDE_11.6.1_8255\workspace\frdmk32l2b_led_blinky\drivers/fsl_smc.h:256:20:SMC_SetPowerModeProtection	16	static
+C:\Users\Acer\Documents\MCUXpressoIDE_11.6.1_8255\workspace\frdmk32l2b_led_blinky\drivers/fsl_smc.h:275:33:SMC_GetPowerModeState	16	static
+../board/clock_config.c:47:6:BOARD_InitBootClocks	8	static
+../board/clock_config.c:121:6:BOARD_BootClockRUN	8	static
+../board/clock_config.c:191:6:BOARD_BootClockVLPR	8	static
